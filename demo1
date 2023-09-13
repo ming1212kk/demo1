@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToDo List</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  /* 默认状态下的样式 */
+.delete-button::after {
+  /* 其他样式属性 */
+  cursor: pointer; /* 设置鼠标光标为手型指针 */
+}
+
+/* 悬停状态下的样式 */
+.delete-button::after:hover {
+  cursor: pointer; /* 可以设置不同的鼠标光标样式 */
+  background-color: #ff5555; /* 修改背景颜色或其他样式 */
+  /* 其他悬停状态下的样式 */
+}
+
+  h1 {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 30px;
+    margin-top: 5px;
+  }
+  h1::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+  }
+  .circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #7092f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid white;
+  }
+  .circle span {
+    color: white;
+    font-size: 25px;
+  }
+  .rectangle {
+    width: 80px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    border-radius: 5px;
+  }
+  .red {
+    background-color: #e64e2c;
+  }
+  .green {
+    background-color: #42ac56;
+  }
+  .blue {
+    background-color: #3377ff;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  /* 鼠标悬停时的样式 */
+.rectangle.green:hover {
+  cursor: pointer;
+}
+/* 鼠标悬停时的样式 */
+.rectangle.red:hover {
+  cursor: pointer;
+}
+/* 鼠标悬停时的样式 */
+.rectangle.blue:hover {
+  cursor: pointer;
+}
+/* 鼠标悬停时的样式 */
+.circle:hover {
+  cursor: pointer;
+}
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    position: relative;
+  }
+  .plan1 {
+    position: relative;
+    padding-bottom: 10px; 
+    flex-grow: 1; 
+  }
+  .plan1::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 370px; 
+    height: 1px; 
+    background-color: #7c7c7c; 
+  }
+  .plan2 {
+    position: relative;
+    color: #dbdbdb;
+    padding-bottom: 10px; 
+    flex-grow: 1; 
+    font-size: 20px;
+  }
+
+  .plan2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 370px; 
+    height: 2px; 
+    background-color: #7c7c7c;
+  }
+  .time {
+    font-size: 14px;
+    color: #999;
+    position: relative;
+  }
+  .delete-button::after {
+    content: "删除";
+    display: inline-block;
+    width: 40px; 
+    height: 20px; 
+    text-align: center;
+    line-height: 20px;
+    background-color: #e13030;
+    color: white;
+    border-radius: 5px;
+    margin-left: 10px; 
+  }
+  .circle-li {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+  }
+  input[type="checkbox"] {
+    display: none;
+  }
+  input[type="checkbox"] + label::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #9b9b9b;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+    background-color: transparent;
+  }
+  /* 复选框选中状态下的样式 */
+input[type="checkbox"]:checked + label::before {
+  content: "√"; /* 在选中状态下添加√字符 */
+  text-align: center;
+  font-family: "Windings 2";
+  line-height: 14px;
+  background-color: #f2f2f2; 
+  color: #000000; 
+}
+input[type="text"] {
+    border: none;               
+    border-bottom: 1px solid;   
+    border-color: #000;         
+    outline: none;              
+    font-size: 15px;
+    color: #000;
+    background-color: #f2f2f2;
+}
+
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      <div class="circle"><span>+</span></div>
+      <div class="todolist"><span>Todo List</span></div>
+      <div class="rectangle red">取消全选</div>
+      <div class="rectangle green">全选</div>
+      <div class="rectangle blue">全屏</div>
+    </h1>
+    <ul>
+      <li>
+        <input type="checkbox" id="task1">
+        <label for="task1" class="circle-li"></label>
+        <div class="plan1">写一份日记</div>
+        <span class="time">23-07-03 16:05 <span class="delete-button"></span></span>
+      </li>
+      <li>
+        <input type="checkbox" id="task2">
+        <label for="task2" class="circle-li"></label>
+        <div class="plan1">总结进入学习内容写一份博客</div>
+        <span class="time">23-07-03 16:06 <span class="delete-button"></span></span>
+      </li>
+      <li>
+        <input type="checkbox" id="task3">
+        <label for="task3" class="circle-li"></label>
+        <div class="plan1">测试程序</div>
+        <span class="time">23-07-03 16:17 <span class="delete-button"></span></span>
+      </li>
+      <li>
+        <input type="checkbox" id="task4">
+        <label for="task4" class="circle-li"></label>
+        <input type="text" class="plan2" contenteditable="true" placeholder="请输入TODO事件"></input>
+        <span class="time">23-07-03 19:56 <span class="delete-button"></span></span>
+      </li>
+    </ul>
+  </div>
+  <script>
+// 获取所有的删除按钮元素
+const deleteButtons = document.querySelectorAll('.delete-button');
+
+// 为每个删除按钮添加点击事件处理程序
+deleteButtons.forEach(deleteButton => {
+  deleteButton.addEventListener('click', function () {
+  // 在这里执行删除操作，例如从列表中删除相应的待办事项
+  // 可以使用parentNode找到li元素并从DOM中删除它
+    const listItem = this.closest('li');
+    listItem.remove();
+  });
+});
+  </script>
+  <script>
+// 获取全选按钮元素
+const selectAllButton = document.querySelector('.rectangle.green');
+
+// 获取取消全选按钮元素
+const unselectAllButton = document.querySelector('.rectangle.red');
+
+// 获取所有的待办事项复选框
+let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+// 为全选按钮添加点击事件处理程序
+selectAllButton.addEventListener('click', function () {
+  // 将全选按钮的状态设置为全选中
+  isAllSelected = true;
+
+  // 更新所有复选框的状态
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = true;
+  });
+
+  // 更新全选按钮的样式
+  this.classList.add('active');
+
+  // 更新取消全选按钮的样式
+  unselectAllButton.classList.remove('active');
+});
+
+// 为取消全选按钮添加点击事件处理程序
+unselectAllButton.addEventListener('click', function () {
+  // 将全选按钮的状态设置为未选中
+  isAllSelected = false;
+
+  // 更新所有复选框的状态
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = false;
+  });
+
+  // 更新取消全选按钮的样式
+  this.classList.add('active');
+
+  // 更新全选按钮的样式
+  selectAllButton.classList.remove('active');
+});
+
+// 变量来跟踪全选按钮的状态
+let isAllSelected = false;
+  </script>
+  <script>
+    // 获取全屏按钮元素
+    const fullscreenButton = document.querySelector('.rectangle.blue');
+    // 添加点击事件处理程序
+    fullscreenButton.addEventListener('click', () => {
+  // 检查浏览器是否支持 Fullscreen API
+  if (document.documentElement.requestFullscreen) {
+    if (!document.fullscreenElement) {
+      // 如果当前不是全屏状态，则进入全屏
+      document.documentElement.requestFullscreen();
+    }
+  }
+});
+  </script>
+  <script>
+    function getCurrentTime() {
+  const now = new Date();
+
+  // 获取年份、月份、日期、小时和分钟
+  const year = now.getFullYear().toString().slice(-2); // 仅获取后两位数字
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份从0开始，因此要加1，并且保证两位数
+  const day = String(now.getDate()).padStart(2, '0'); // 保证两位数
+  const hours = String(now.getHours()).padStart(2, '0'); // 保证两位数
+  const minutes = String(now.getMinutes()).padStart(2, '0'); // 保证两位数
+
+  // 组合时间字符串
+  const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+  return formattedTime;
+}
+
+  // 获取加号按钮元素
+const addButton = document.querySelector('.circle');
+
+// 获取待办事项列表元素
+const todoList = document.querySelector('ul');
+
+  let taskCounter = 4;
+
+    // 为加号按钮添加点击事件处理程序
+    addButton.addEventListener('click', () => {
+      // 创建一个新的待办事项条目
+      const newItem = document.createElement('li');
+      const currentTime = getCurrentTime(); // 获取当前时间
+      taskCounter++; // 增加计数器的值，确保生成唯一的id
+      newItem.innerHTML = `
+      <input type="checkbox" id="task${taskCounter}">
+      <label for="task${taskCounter}" class="circle-li"></label>
+      <input type="text" class="plan2" contenteditable="true" placeholder="请输入TODO事件">
+      <span class="time">${currentTime} <span class="delete-button"></span></span>
+      `;
+
+  // 将新条目添加到待办事项列表
+  todoList.appendChild(newItem);
+
+  // 重新获取复选框列表，包括新添加的复选框
+   checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+  // 设置新条目的复选框为未选中状态
+  const newCheckbox = newItem.querySelector('input[type="checkbox"]');
+  newCheckbox.checked = false;
+
+  // 获取新添加的删除按钮并为其添加点击事件处理程序
+  const newDeleteButton = newItem.querySelector('.delete-button');
+  newDeleteButton.addEventListener('click', function () {
+
+    // 在这里执行删除操作，例如从列表中删除相应的待办事项
+    // 可以使用parentNode找到li元素并从DOM中删除它
+
+    const listItem = this.closest('li');
+    listItem.remove();
+  });
+});
+
+  </script>
+</body>
+</html>
